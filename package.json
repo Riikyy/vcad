@@ -1,0 +1,175 @@
+{
+  "name": "vcad",
+  "displayName": "VCAD — DWG/DXF Viewer & Notes",
+  "description": "View AutoCAD DWG and DXF drawings inside VS Code and mark them up with shapes, lines, brush and highlighter notes, and measure distances.",
+  "version": "0.2.0",
+  "license": "GPL-3.0-or-later",
+  "publisher": "vcad",
+  "engines": {
+    "vscode": "^1.85.0",
+    "node": ">=20"
+  },
+  "categories": [
+    "Visualization",
+    "Other"
+  ],
+  "keywords": [
+    "dwg",
+    "dxf",
+    "cad",
+    "autocad",
+    "viewer",
+    "markup",
+    "annotation"
+  ],
+  "main": "./dist/extension.js",
+  "activationEvents": [],
+  "contributes": {
+    "customEditors": [
+      {
+        "viewType": "vcad.drawing",
+        "displayName": "VCAD Drawing",
+        "selector": [
+          { "filenamePattern": "*.dwg" },
+          { "filenamePattern": "*.DWG" },
+          { "filenamePattern": "*.dxf" },
+          { "filenamePattern": "*.DXF" }
+        ],
+        "priority": "default"
+      }
+    ],
+    "commands": [
+      {
+        "command": "vcad.zoomExtents",
+        "title": "Zoom to Extents",
+        "category": "VCAD",
+        "icon": "$(screen-full)"
+      },
+      {
+        "command": "vcad.zoomIn",
+        "title": "Zoom In",
+        "category": "VCAD",
+        "icon": "$(zoom-in)"
+      },
+      {
+        "command": "vcad.zoomOut",
+        "title": "Zoom Out",
+        "category": "VCAD",
+        "icon": "$(zoom-out)"
+      },
+      {
+        "command": "vcad.toggleLayers",
+        "title": "Toggle Layers Panel",
+        "category": "VCAD",
+        "icon": "$(list-tree)"
+      },
+      {
+        "command": "vcad.toggleNotes",
+        "title": "Show/Hide Notes",
+        "category": "VCAD",
+        "icon": "$(eye)"
+      },
+      {
+        "command": "vcad.clearNotes",
+        "title": "Delete All Notes",
+        "category": "VCAD"
+      },
+      {
+        "command": "vcad.exportPng",
+        "title": "Export View as PNG",
+        "category": "VCAD",
+        "icon": "$(device-camera)"
+      },
+      {
+        "command": "vcad.reload",
+        "title": "Reload Drawing",
+        "category": "VCAD",
+        "icon": "$(refresh)"
+      }
+    ],
+    "menus": {
+      "editor/title": [
+        { "command": "vcad.zoomExtents", "when": "vcad.activeEditor", "group": "navigation@1" },
+        { "command": "vcad.toggleLayers", "when": "vcad.activeEditor", "group": "navigation@2" },
+        { "command": "vcad.toggleNotes", "when": "vcad.activeEditor", "group": "navigation@3" },
+        { "command": "vcad.exportPng", "when": "vcad.activeEditor", "group": "navigation@4" },
+        { "command": "vcad.reload", "when": "vcad.activeEditor", "group": "navigation@5" }
+      ],
+      "commandPalette": [
+        { "command": "vcad.zoomExtents", "when": "vcad.activeEditor" },
+        { "command": "vcad.zoomIn", "when": "vcad.activeEditor" },
+        { "command": "vcad.zoomOut", "when": "vcad.activeEditor" },
+        { "command": "vcad.toggleLayers", "when": "vcad.activeEditor" },
+        { "command": "vcad.toggleNotes", "when": "vcad.activeEditor" },
+        { "command": "vcad.clearNotes", "when": "vcad.activeEditor" },
+        { "command": "vcad.exportPng", "when": "vcad.activeEditor" },
+        { "command": "vcad.reload", "when": "vcad.activeEditor" }
+      ]
+    },
+    "keybindings": [
+      { "command": "vcad.zoomExtents", "key": "ctrl+shift+e", "mac": "cmd+shift+e", "when": "vcad.activeEditor" }
+    ],
+    "configuration": {
+      "title": "VCAD",
+      "properties": {
+        "vcad.background": {
+          "type": "string",
+          "enum": ["dark", "light", "match-theme"],
+          "default": "dark",
+          "description": "Background of the drawing canvas. CAD drawings are authored for dark backgrounds, so 'dark' keeps colours closest to AutoCAD's model space."
+        },
+        "vcad.notes.location": {
+          "type": "string",
+          "enum": ["sibling", "subfolder"],
+          "enumDescriptions": [
+            "Store notes next to the drawing as <drawing>.vcadnotes.json",
+            "Store notes in a .vcad folder beside the drawing"
+          ],
+          "default": "sibling",
+          "description": "Where markup notes are saved. The drawing file itself is never modified."
+        },
+        "vcad.render.maxEntities": {
+          "type": "number",
+          "default": 400000,
+          "minimum": 1000,
+          "description": "Safety cap on the number of geometry primitives expanded from a drawing. Drawings beyond this are truncated rather than freezing the editor."
+        },
+        "vcad.render.showText": {
+          "type": "boolean",
+          "default": true,
+          "description": "Render TEXT and MTEXT entities. Turning this off speeds up very large drawings."
+        },
+        "vcad.render.lineWidth": {
+          "type": "number",
+          "default": 1,
+          "minimum": 0.25,
+          "maximum": 4,
+          "description": "Base stroke width in device pixels used for drawing geometry."
+        },
+        "vcad.render.curveResolution": {
+          "type": "number",
+          "default": 64,
+          "minimum": 8,
+          "maximum": 512,
+          "description": "Number of segments used when a curve (spline, non-uniformly scaled arc) has to be flattened into line segments."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run build",
+    "build": "node esbuild.js --production",
+    "watch": "node esbuild.js --watch",
+    "typecheck": "tsc --noEmit",
+    "package": "vsce package"
+  },
+  "dependencies": {
+    "@mlightcad/libredwg-web": "^0.7.10"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "@types/vscode": "^1.85.0",
+    "esbuild": "^0.23.0",
+    "typescript": "^5.5.0"
+  }
+}

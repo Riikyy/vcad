@@ -1,0 +1,28 @@
+VCAD — DWG/DXF Viewer & Notes for VS Code
+Copyright (C) 2026 VCAD contributors
+
+This program is free software: you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later
+version. See the LICENSE file for the full text.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+
+WHY GPL-3.0
+-----------
+
+This extension bundles LibreDWG (https://www.gnu.org/software/libredwg/),
+compiled to WebAssembly and distributed as @mlightcad/libredwg-web, to read DWG
+files. LibreDWG is licensed under the GPL-3.0. Because it is distributed as part
+of this extension, the work as a whole is covered by the GPL-3.0.
+
+
+THIRD-PARTY COMPONENTS
+----------------------
+
+@mlightcad/libredwg-web — GPL-3.0
+    LibreDWG compiled to WebAssembly.
+    https://github.com/mlightcad/libredwg-web
